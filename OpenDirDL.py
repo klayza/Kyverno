@@ -1,4 +1,4 @@
-import urllib.request
+import pyperclip as pc
 import requests
 from bs4 import BeautifulSoup
 from download import download
@@ -50,7 +50,7 @@ def PathAscend(path):
 
 
 def Help():
-    print("Use commands: 'help', 'cd', 'dir', 'dl'")
+    print("Use commands: 'help', 'cd', 'dir', 'dl', 'copy'")
 
 
 def Cd(path):
@@ -64,6 +64,8 @@ def URLify(url):
 
 def Main():
     dir = input("Enter a directory URL: ")
+    if dir == "default":
+        dir = Directory
     if dir[-1] == "/":
         index = dir.rfind("/")
         if len(dir) > index:
@@ -103,6 +105,20 @@ def Main():
                 continue
             else:
                 dir = path
+
+        #
+        elif "copy" in command:
+            if "copy" == command:
+                pc.copy(dir)
+                print("Copied " + dir + " to clipboard")
+            else:
+                r = requests.get(URLify(dir + "/" + command[5:]))
+                if r != 200:
+                    print("Invalid Link")
+                    continue
+                pc.copy(dir + "/" + command[5:])
+                print("Copied " + dir + "/" + command[5:] + " to clipboard")
+
 
         # Dl
         elif "dl" in command:

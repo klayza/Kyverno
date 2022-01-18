@@ -64,7 +64,7 @@ def URLify(url):
 
 def Main():
     dir = input("Enter a directory URL: ")
-    if dir == "default":
+    if dir == "df":
         dir = Directory
     if dir[-1] == "/":
         index = dir.rfind("/")
@@ -106,7 +106,7 @@ def Main():
             else:
                 dir = path
 
-        #
+        # Copy
         elif "copy" in command:
             if "copy" == command:
                 pc.copy(dir)

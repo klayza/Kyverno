@@ -11,16 +11,24 @@ Directory = "http://103.152.18.18/Data/English/hollywood/2021/"
 
 def GetFolders(directory):
     folders = []
-    r = requests.get(directory)
-    raw_folders = BeautifulSoup(r.content, "html.parser").get_text().strip().split("\r\n")
-    for folder in raw_folders:
-        temp = ""
-        for letter in folder:
-            if letter == "/":
-                break
-            temp += letter
-        folders.append(temp)
-    del folders[0]
+    r = requests.get(directory)        
+    soup = BeautifulSoup(r.content, "html.parser")
+    
+    # WebDAV server
+    if "(edit with office)": 
+        pass
+
+    # Apache server
+    else:
+        raw_folders = soup.get_text().strip().split("\r\n")
+        for folder in raw_folders:
+            temp = ""
+            for letter in folder:
+                if letter == "/":
+                    break
+                temp += letter
+            folders.append(temp)
+        del folders[0]
 
     return folders
 
@@ -64,7 +72,7 @@ def URLify(url):
 
 def Main():
     dir = input("Enter a directory URL: ")
-    if dir == "default":
+    if dir == "df":
         dir = Directory
     if dir[-1] == "/":
         index = dir.rfind("/")
@@ -73,13 +81,14 @@ def Main():
 
     r = requests.get(dir)
     if r.status_code != 200:
+        print(f"[{r.status_code}] Failed to connect to {dir}")
         Main()
 
-    print("Connected to " + dir)
+    print(f"{'='*55}\nConnected to " + dir)
     Help()
 
     while True:
-        command = input("\n" + URLtoPath(dir) + "> ")
+        command = input(URLtoPath(dir) + "> ")
 
         # Dir
         if command == "dir" or command == "ls":
@@ -147,9 +156,11 @@ def Main():
                     pass                        # Recursive download TODO
 
 
-#downloads_path = str(Path.home() / "Downloads") + "/"
-#print(download("http://103.152.18.18/Data/English/hollywood/2021/Wolf%20(2021)/YIFYStatus.com.txt", downloads_path + "YIFYStatus.com.txt"))
+#a = GetFolders("http://192.168.0.158:8080/")
 #exit()
-
-Main()
+while True:
+    try:
+        Main()
+    except KeyboardInterrupt:
+        print("Back")
 input()

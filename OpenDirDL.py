@@ -115,7 +115,7 @@ def Main():
             else:
                 dir = path
 
-        #
+        # Copy
         elif "copy" in command:
             if "copy" == command:
                 pc.copy(dir)
